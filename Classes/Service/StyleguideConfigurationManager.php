@@ -248,19 +248,14 @@ class StyleguideConfigurationManager
      */
     protected function generateAssetUrl(string $path): Uri
     {
-        $path = GeneralUtility::getFileAbsFileName($path);
+        $path = PathUtility::getPublicResourceWebPath($path);
+
         if (!$path) {
             throw new InvalidAssetException(sprintf('Asset not found: %s', $path), 1608723092);
         }
-
         $baseUrl = static::getCurrentSite()->getBase();
-        $modified = filemtime($path);
         return $baseUrl
-            ->withPath(
-                $baseUrl->getPath() .
-                PathUtility::stripPathSitePrefix(GeneralUtility::getFileAbsFileName($path))
-            )
-            ->withQuery('?' . $modified)
+            ->withPath($path)
             ->withPort(GeneralUtility::getIndpEnv('TYPO3_PORT') ?: null);
     }
 
